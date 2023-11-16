@@ -148,6 +148,168 @@ var productList = [
     }
 ]
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Lắng nghe sự kiện click trên label
+    document.querySelectorAll('.custom-color').forEach(function (label) {
+        label.addEventListener('click', function () {
+            // Bỏ lớp 'selected' từ tất cả các label khác
+            document.querySelectorAll('.custom-color').forEach(function (otherLabel) {
+                otherLabel.classList.remove('selected');
+            });
 
+            // Thêm lớp 'selected' cho label được click
+            this.classList.add('selected');
+        });
+    });
+});
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Lắng nghe sự kiện click trên label
+    document.querySelectorAll('.custom-size').forEach(function (label) {
+        label.addEventListener('click', function () {
+            // Bỏ lớp 'selected' từ tất cả các label khác
+            document.querySelectorAll('.custom-size').forEach(function (otherLabel) {
+                otherLabel.classList.remove('selected');
+            });
 
+            // Thêm lớp 'selected' cho label được click
+            this.classList.add('selected');
+        });
+    });
+});
+
+function changeColor1(){
+    var imagesDisplayed = document.getElementById('images');
+    imagesDisplayed.innerHTML = '';
+    imagesDisplayed.innerHTML =`
+    <div style="width: 91.66666667%; position: relative; padding: 0; float: left;">
+        <div id="slide-image">
+            <div style="width: 50%; float: left">
+                <a href="images/product4a.png">
+                    <img src="images/product4a.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 50%; float: left">
+                <a href="images/product4b.png">
+                    <img src="images/product4b.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4c.png">
+                    <img src="images/product4c.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4d.png">
+                    <img src="images/product4d.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4e.png">
+                    <img src="images/product4e.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4f.png">
+                    <img src="images/product4f.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+        </div>
+    </div>`;
+}
+function changeColor2(){
+    var imagesDisplayed = document.getElementById('images');
+    imagesDisplayed.innerHTML = '';
+    imagesDisplayed.innerHTML =`
+    <div style="width: 91.66666667%; position: relative; padding: 0; float: left;">
+        <div id="slide-image">
+            <div style="width: 50%; float: left">
+                <a href="images/product4a1.png">
+                    <img src="images/product4a1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 50%; float: left">
+                <a href="images/product4b1.png">
+                    <img src="images/product4b1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4c1.png">
+                    <img src="images/product4c1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4d1.png">
+                    <img src="images/product4d1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4e1.png">
+                    <img src="images/product4e1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+            <div style="width: 25%; float: left">
+                <a href="images/product4f1.png">
+                    <img src="images/product4f1.png" alt="Đầm thu midi xoắn lưng" class="img-responsive">
+                </a>
+            </div>
+        </div>
+    </div>`;
+}
+
+function changeDetails1(){
+    var details = document.getElementById('tab-content');
+    details.innerHTML = '';
+    details.innerHTML = `
+    <div style="display: block; visibility: visible;">
+        <div class="description-productdetail" style="margin: 15px 0 0 0;">
+            <p>- Đầm thun midi xoắn lưng thời trang, nữ tính</p>
+            <p>- Trang phục phù hợp dạo phố, thường ngày,...</p>
+            <p>- Kch thước áo: S - M - L</p>
+            <p>S : 118cm - M : 120cm - L : 122cm</p>
+            <p><strong>Hướng dẫn sửdụng</strong><br>
+            - Giặt tay bằng nước lạnh</p>
+            <p>- Không ngâm, không tẩy</p>
+            <p>- Giặt riêng các sản phẩm khác màu</p>
+            <p>- Không vắt</p>
+            <p>- L&à ủi ở nhiệt độ thấp.</p>
+            <p>- Khuyến kch giặt khô</p>
+        </div>
+    </div>`
+}
+function changeDetails2(){
+    var details = document.getElementById('tab-content');
+    details.innerHTML = '';
+    details.innerHTML = `
+        <div style="display: block; visibility: visible; margin: 20px 0 0 0;">
+            <div style="margin: 15px 0 0 0">
+                <div style="float: left; width: 50%; padding: 0;">
+                    <ul style="list-style: inherit; margin-left: 15px; margin-bottom: 100px">
+                        <li>
+                            <span class="infobe">Mã sản phẩm:</span>
+                            <span class="infoaf">JNDLU064</span>
+                        </li>
+                        <li>
+                            <span class="infobe">Kiểu dáng:</span>
+                            <span class="infoaf">Đầm lửng</span>
+                        </li>
+                        <li>
+                            <span class="infobe">Chất liệu:</span>
+                            <span class="infoaf">Knit</span>
+                        </li>
+                        <li>
+                            <span class="infobe">Màu sắc:</span>
+                            <span class="infoaf">Đen-Nâu</span>
+                        </li>
+                        <li>
+                            <span class="infobe">Kích cỡ:</span>
+                            <span class="infoaf">S-M-L</span>
+                        </li>
+                        <li>
+                            <span class="infoaf">Giá đã bao gồm VAT</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>`
+}
