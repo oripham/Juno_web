@@ -981,3 +981,27 @@ button.btnBuyNow:hover {
     font-weight: 500;
     font-size: 18px;
 }
+table tr th {
+    padding: 10px;
+    text-align: left;
+}
+ .variant {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+#checkout {
+    padding: 10px 30px;
+    position: relative;
+    width: 100%;
+    white-space: nowrap;
+    float: left;
+    background: black;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: none;
+    transition: opacity 150ms linear, color 150ms linear, background 150ms linear;
+}

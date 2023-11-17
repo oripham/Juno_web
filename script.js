@@ -75,6 +75,7 @@ function showFilter() {
     
 }
 
+
 var productList = [
     {
         image: ["images/product1a.png", "images/product1b.png"],
@@ -148,6 +149,68 @@ var productList = [
     }
 ]
 
+var money = 20;
+
+function addBasket(idProduct) {
+    console.log("Button clicked. idProduct:", idProduct);
+    // Lấy giá trị của radio buttons và lưu vào mảng selectedValues
+    var colorOptions = document.getElementsByName('option1');
+    var sizeOptions = document.getElementsByName('option2');
+
+    var selectedColor = null;
+    var selectedSize = null;
+
+    for (var i = 0; i < colorOptions.length; i++) {
+        if (colorOptions[i].checked) {
+            selectedColor = colorOptions[i].value;
+            break; // Dừng vòng lặp sau khi đã tìm thấy radio button được chọn
+        }
+    }
+
+    for (var i = 0; i < sizeOptions.length; i++) {
+        if (sizeOptions[i].checked) {
+            selectedSize = sizeOptions[i].value;
+            break; // Dừng vòng lặp sau khi đã tìm thấy radio button được chọn
+        }
+    }
+    
+    event.preventDefault();
+    // Chuyển hướng đến trang giỏ hàng và truyền tham số idProduct, selectedColor, và selectedSize
+    window.location.href = `basket.html?idProduct=${idProduct}&selectedColor=${selectedColor}&selectedSize=${selectedSize}`;
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Lắng nghe sự kiện click trên label color
+    document.querySelectorAll('.custom-color').forEach(function (label) {
+        label.addEventListener('click', function () {
+            // Bỏ lớp 'selected' từ tất cả các label khác
+            document.querySelectorAll('.custom-color').forEach(function (otherLabel) {
+                otherLabel.classList.remove('selected');
+            });
+
+            // Thêm lớp 'selected' cho label được click
+            this.classList.add('selected');
+        });
+    });
+
+    // Lắng nghe sự kiện click trên label size
+    document.querySelectorAll('.custom-size').forEach(function (label) {
+        label.addEventListener('click', function () {
+            // Bỏ lớp 'selected' từ tất cả các label khác
+            document.querySelectorAll('.custom-size').forEach(function (otherLabel) {
+                otherLabel.classList.remove('selected');
+            });
+
+            // Thêm lớp 'selected' cho label được click
+            this.classList.add('selected');
+        });
+    });
+});
+
+
+
 function renderProducts(products) {
     var targetElement = document.getElementById("grid-container-collection");
     targetElement.innerHTML = '';
@@ -194,35 +257,6 @@ function renderProducts(products) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Lắng nghe sự kiện click trên label
-    document.querySelectorAll('.custom-color').forEach(function (label) {
-        label.addEventListener('click', function () {
-            // Bỏ lớp 'selected' từ tất cả các label khác
-            document.querySelectorAll('.custom-color').forEach(function (otherLabel) {
-                otherLabel.classList.remove('selected');
-            });
-
-            // Thêm lớp 'selected' cho label được click
-            this.classList.add('selected');
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Lắng nghe sự kiện click trên label
-    document.querySelectorAll('.custom-size').forEach(function (label) {
-        label.addEventListener('click', function () {
-            // Bỏ lớp 'selected' từ tất cả các label khác
-            document.querySelectorAll('.custom-size').forEach(function (otherLabel) {
-                otherLabel.classList.remove('selected');
-            });
-
-            // Thêm lớp 'selected' cho label được click
-            this.classList.add('selected');
-        });
-    });
-});
 
 function changeColor1(){
     var imagesDisplayed = document.getElementById('images');
