@@ -79,74 +79,120 @@ var productList = [
     {
         image: ["images/product1a.png", "images/product1b.png"],
         name: "Túi Xách Nhỏ Đeo Vai Lock & Key",
-        price: 843
+        price: [843,652]
     },
     {
         image: ["images/product2a.png", "images/product2b.png"],
         name: "Túi Xách Trung Lock & Key",
-        price: 882
+        price: [882,785]
     },
     {
         image: ["images/product3a.png", "images/product3b.png"],
         name: "Túi Xách Nhỏ Top Handle Lock & Key",
-        price: 843
+        price: [843,725]
     },
     {
         image: ["images/product4a.png", "images/product4b.png"],
         name: "Đầm Thun Midi Xoắn Lưng",
-        price: 637
+        price: [637,545]
     },
     {
         image: ["images/pro-rec1a.png", "images/pro-rec1b.png"],
         name: "Giày Cao Gót Quai Ngang Trang Trí Khoá",
-        price: 449
+        price: [449,354]
     },
     {
         image: ["images/pro-rec2a.png", "images/pro-rec2b.png"],
         name: "Giày Cao Gót Quai Ngang Trang Trí Khoá",
-        price: 450
+        price: [450,350]
     },
     {
         image: ["images/pro-rec3a.png", "images/pro-rec3b.png"],
         name: "Giày Búp Bê Mary Jean Phối Khoá Tennis",
-        price: 450
+        price: [450,369]
     },
     {
         image: ["images/pro-rec4a.png", "images/pro-rec4b.png"],
         name: "Giày Búp Bê Cao Gót Trang Trí Khoá",
-        price: 446
+        price: [446,330]
     },
     {
         image: ["images/pro-rec5a.png", "images/pro-rec5b.png"],
         name: "Ví Trang Trí Khoá Pyramid",
-        price: 446
+        price: [446,345]
     },
     {
         image: ["images/pro-rec6a.png", "images/pro-rec6b.png"],
         name: "Ví Có Dây Đeo Trang Trí Khoá",
-        price: 588
+        price: [588,499]
     },
     {
         image: ["images/pro-rec7a.png", "images/pro-rec7b.png"],
         name: "Túi Xách Nhỏ Dạng Hộp Moon Box",
-        price: 588
+        price: [588,354]
     },
     {
         image: ["images/pro-rec8a.png", "images/pro-rec8b.png"],
         name: "Ví Có Dây Đeo Trang Trí Khoá",
-        price: 784
+        price: [784,530]
     },
     {
         image: ["images/product5a.png", "images/product5b.png"],
         name: "Quần Tây Dáng Đứng Ủi Li",
-        price: 620
+        price: [620,545]
     },
     {
         image: ["images/product6a.png","images/product6b.png"],
         name: "Mắt Kính Butterfly Trendy Kim Loại ",
-        price: 550
+        price: [550,460]
     }
 ]
+
+function renderProducts(products) {
+    var targetElement = document.getElementById("grid-container-collection");
+    targetElement.innerHTML = '';
+
+    for (var i = 0; i < products.length; i++) {
+        var product = products[i];
+        var productDiv = document.createElement("div");
+        productDiv.className = "pro-loop customize";
+        productDiv.style.margin = "10px 0 20px 0";
+        productDiv.style.zIndex = "0";
+
+        productDiv.innerHTML = `
+            <div style="position: relative;" class="product-block">
+                <div class="product-img">
+                    <a href="#" style="display: block;">
+                        <picture>
+                            <img src="${product.image[0]}" alt="${product.name}">
+                        </picture>
+                        <picture>
+                            <img src="${product.image[1]}" alt="${product.name}">
+                        </picture>
+                    </a>
+                </div>
+                <div class="product-detail clear-fix" style="padding: 0;">
+                    <div>
+                        <h3>
+                            <a href="#">${product.name}</a>
+                        </h3>
+                    </div>
+                    <div style="text-align: center;">
+                        <p style="font-weight: bold; color: black;">${product.price[0]},000đ</p>
+                    </div>
+                </div>
+                <div class="activeLabelStatus actionLoop" >
+                    <div class="labelNew">HÀNG MỚI</div>
+                </div>
+                <div style="display: block !important;" class="actionLoop">
+                    <a href="#">MUA NGAY</a>
+                </div>
+            </div>
+        `;
+
+        targetElement.appendChild(productDiv);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     // Lắng nghe sự kiện click trên label

@@ -736,7 +736,7 @@ footer ul li a{
     float: left;
     width: 135px;
 }
-#grid-container-collection{
+#grid-container-collection, #product-sale{
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
     grid-template-rows: 1fr;
@@ -758,6 +758,12 @@ footer ul li a{
 }
 #grid-container-collection .pro-loop{
     height: 455px;
+}
+#product-sale .pro-loop{
+    height: 479px;
+    z-index: 0;
+    background: transparent;
+    padding: 0px 24px;
 }
 .row {
     margin-right: -15px;
@@ -938,4 +944,40 @@ button.btnBuyNow:hover {
 .description-productdetail p{
     font-weight: 300;
     margin-bottom: 0px;
+}
+#menu-black-friday{
+    position: relative;
+    top: 10px;
+    z-index: 99;
+    text-transform: uppercase;
+}
+.list-item-menu{
+    background: black; width: 50%; text-align: center; display: flex; justify-content: center;
+}
+.list-item-menu div{
+    display: inline-block; width: 100%; border-right: 1px solid;
+}
+.list-item-menu a{
+    font-weight: bold; color: white; font-size: 10px; display: inline-block; padding: 8px 0;
+}
+.btnLoadMore {
+    text-align: center;
+    margin: 30px 0 30px 0;
+    display: inline-block;
+    width: 100%;
+}
+.btnLoadMore img {
+    display: inline-block;
+    width: 50px;
+    margin: 0 0 15px 0;
+    cursor: pointer;
+}
+.btnLoadMore a {
+    background: #ffffff;
+    padding: 12px 50px;
+    display: inline-block;
+    border: 1px solid #d0d0d0;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 18px;
 }
