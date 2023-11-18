@@ -358,7 +358,7 @@ a:active {
     position: relative; overflow: hidden; transform: translate3d(0,0,0);
 }
 .owl-stage .owl-item{
-    transition: transform 0.5s ease-in-out;
+    transition: transform 1s ease-in-out;
 }
 
  .owl-prev, .owl-next{

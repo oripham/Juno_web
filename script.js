@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
       items: 1,
       loop: true,
       autoplay: true,
-      autoplayTimeout: 2000,
+      autoplayTimeout: 1000,
       autoplayHoverPause: true,
     });
   
@@ -18,7 +18,119 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       
   });
-  
+
+  // Khai báo mảng để lưu trữ thông tin người dùng
+var users = [];
+
+// Hàm đăng ký
+function register() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password === confirmPassword) {
+        // Kiểm tra xem tên người dùng đã tồn tại chưa
+        var existingUser = users.find(user => user.username === username);
+
+        if (existingUser) {
+            alert("Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+        } else {
+            // Thêm người dùng mới vào mảng
+            users.push({ username: username, password: password });
+
+            alert("Đăng ký thành công!");
+            var login = document.getElementById('login');
+                login.innerHTML = `
+                <div class="login-container" id="login">
+                    <h2>Đăng nhập</h2>
+                    <form id="loginForm">
+                        <input type="text" id="username" placeholder="Username" required>
+                        <input type="password" id="password" placeholder="Password" required>
+                        <button type="button" onclick="login()">Đăng nhập</button>
+                        <button type="button" onclick="innertReges()">Đăng ký</button>
+                    </form>
+                </div>
+                `;
+        }
+    } else {
+        alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
+    }
+}
+function innertReges(){
+    var register = document.getElementById('login');
+    register.innerHTML = `
+    <div class="register-container" id="register">
+    <h2>Đăng ký</h2>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <button type="button" onclick="register()">Đăng ký</button>
+    </form>
+</div>
+    `;
+}
+// Hàm đăng nhập
+function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    // Kiểm tra xem người dùng có tồn tại không và mật khẩu có đúng không
+    var loginUser = users.find(user => user.username === username && user.password === password);
+
+    if (loginUser) {
+        alert("Đăng nhập thành công!");
+        window.location.href = 'index.html';
+        // Redirect hoặc thực hiện các hành động khác sau khi đăng nhập thành công
+    } else {
+        alert("Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại.");
+    }
+}
+//Lưu vào localStorage
+// function login() {
+//     var username = document.getElementById("username").value;
+//     var password = document.getElementById("password").value;
+
+//     // Lấy danh sách người dùng từ localStorage
+//     var users = JSON.parse(localStorage.getItem("users")) || [];
+
+//     // Kiểm tra xem người dùng có tồn tại không và mật khẩu có đúng không
+//     var loginUser = users.find(user => user.username === username && user.password === password);
+
+//     if (loginUser) {
+//         alert("Đăng nhập thành công!");
+//         // Redirect hoặc thực hiện các hành động khác sau khi đăng nhập thành công
+//     } else {
+//         alert("Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại.");
+//     }
+// }
+// function register() {
+//     var username = document.getElementById("username").value;
+//     var password = document.getElementById("password").value;
+//     var confirmPassword = document.getElementById("confirmPassword").value;
+
+//     if (password === confirmPassword) {
+//         // Kiểm tra xem người dùng đã đăng ký chưa
+//         var users = JSON.parse(localStorage.getItem("users")) || [];
+
+//         // Kiểm tra xem tên người dùng đã tồn tại chưa
+//         var existingUser = users.find(user => user.username === username);
+
+//         if (existingUser) {
+//             alert("Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+//         } else {
+//             // Thêm người dùng mới vào danh sách
+//             users.push({ username: username, password: password });
+
+//             // Lưu danh sách người dùng vào localStorage
+//             localStorage.setItem("users", JSON.stringify(users));
+
+//             alert("Đăng ký thành công!");
+//         }
+//     } else {
+//         alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
+//     }
+// }
 
 
 // Các ID của video và thông tin về video
