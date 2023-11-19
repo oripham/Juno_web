@@ -56,19 +56,19 @@ document.addEventListener('DOMContentLoaded', function () {
 //         alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
 //     }
 // }
-// function innertReges(){
-//     var register = document.getElementById('login');
-//     register.innerHTML = `
-//     <div class="register-container" id="register">
-//     <h2>Đăng ký</h2>
-//     <form id="registerForm">
-//         <input type="text" id="username" placeholder="Username" required>
-//         <input type="password" id="password" placeholder="Password" required>
-//         <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-//     </form>
-// </div>
-//     `;
-// }
+function innertReges(){
+    var register = document.getElementById('login');
+    register.innerHTML = `
+    <div class="register-container" id="register">
+    <h2>Đăng ký</h2>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+    </form>
+</div>
+    `;
+}
 // // Hàm đăng nhập
 // function login() {
 //     var username = document.getElementById("username").value;
