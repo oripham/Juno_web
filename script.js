@@ -65,6 +65,7 @@ function innertReges(){
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
         <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <button type="button" onclick="register()">Đăng ký</button>
     </form>
 </div>
     `;
@@ -125,6 +126,17 @@ function register() {
             localStorage.setItem("users", JSON.stringify(users));
 
             alert("Đăng ký thành công!");
+            var login = document.getElementById('login');
+            login.innerHTML = `
+            <div class="login-container" id="login">
+                <h2>Đăng nhập</h2>
+                <form id="loginForm">
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button type="button" onclick="login()">Đăng nhập</button>
+                </form>
+            </div>
+            `;
         }
     } else {
         alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
