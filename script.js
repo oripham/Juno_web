@@ -108,38 +108,41 @@ function register() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (password === confirmPassword) {
-        // Kiểm tra xem người dùng đã đăng ký chưa
-        var users = JSON.parse(localStorage.getItem("users")) || [];
-
-        // Kiểm tra xem tên người dùng đã tồn tại chưa
-        var existingUser = users.find(user => user.username === username);
-
-        if (existingUser) {
-            alert("Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+    if (username === '' || password === '') 
+        alert("Không được để trống bất cứ ô nào");
+    else {
+        if (password === confirmPassword) {
+            // Kiểm tra xem người dùng đã đăng ký chưa
+            var users = JSON.parse(localStorage.getItem("users")) || [];
+    
+            // Kiểm tra xem tên người dùng đã tồn tại chưa
+            var existingUser = users.find(user => user.username === username);
+    
+            if (existingUser) {
+                alert("Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+            } else {
+                // Thêm người dùng mới vào danh sách
+                users.push({ username: username, password: password });
+    
+                // Lưu danh sách người dùng vào localStorage
+                localStorage.setItem("users", JSON.stringify(users));
+    
+                alert("Đăng ký thành công!");
+                var login = document.getElementById('login');
+                login.innerHTML = `
+                <div class="login-container" id="login">
+                    <h2>Đăng nhập</h2>
+                    <form id="loginForm">
+                        <input type="text" id="username" placeholder="Username" required>
+                        <input type="password" id="password" placeholder="Password" required>
+                        <button type="button" onclick="login()">Đăng nhập</button>
+                    </form>
+                </div>
+                `;
+            }
         } else {
-            // Thêm người dùng mới vào danh sách
-            users.push({ username: username, password: password });
-
-            // Lưu danh sách người dùng vào localStorage
-            localStorage.setItem("users", JSON.stringify(users));
-
-            alert("Đăng ký thành công!");
-            var login = document.getElementById('login');
-            login.innerHTML = `
-            <div class="login-container" id="login">
-                <h2>Đăng nhập</h2>
-                <form id="loginForm">
-                    <input type="text" id="username" placeholder="Username" required>
-                    <input type="password" id="password" placeholder="Password" required>
-                    <button type="button" onclick="login()">Đăng nhập</button>
-                </form>
-            </div>
-            `;
+            alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
         }
-    } else {
-        alert("Mật khẩu xác nhận không khớp. Vui lòng thử lại.");
     }
 }
 
