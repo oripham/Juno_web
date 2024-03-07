@@ -148,32 +148,32 @@ function register() {
 
 
 // Các ID của video và thông tin về video
-const videoIDs = ["sD5dcuu70JA", "M5sXSeqD9xU"];
-const videoContainers = ["video1", "video2"];
+// const videoIDs = ["sD5dcuu70JA", "M5sXSeqD9xU"];
+// const videoContainers = ["video1", "video2"];
 
-// Hàm tạo trình trình phát YouTube cho video cụ thể
-function createYouTubePlayer(videoID, containerID) {
-  return new YT.Player(containerID, {
-    width: '100%',
-    videoId: videoID,
-    playerVars: {
-      'autoplay': 1, // bật tự động phát
-			'mute': 1,
-      'controls': 0, // k hiển thị nút điều khiển
-      'showinfo': 0, // Tắt thông tin video
-      'loop': 1, // Lặp video
-			'showinfo': 0,
-      'playlist': videoID // Sử dụng video hiện tại làm danh sách phát ảo
-    },
-  });
-}
+// // Hàm tạo trình trình phát YouTube cho video cụ thể
+// function createYouTubePlayer(videoID, containerID) {
+//   return new YT.Player(containerID, {
+//     width: '100%',
+//     videoId: videoID,
+//     playerVars: {
+//       'autoplay': 1, // bật tự động phát
+// 			'mute': 1,
+//       'controls': 0, // k hiển thị nút điều khiển
+//       'showinfo': 0, // Tắt thông tin video
+//       'loop': 1, // Lặp video
+// 			'showinfo': 0,
+//       'playlist': videoID // Sử dụng video hiện tại làm danh sách phát ảo
+//     },
+//   });
+// }
 
-// Hàm gọi khi Thư viện YouTube IFrame API đã được tải
-function onYouTubeIframeAPIReady() {
-  for (let i = 0; i < videoIDs.length; i++) {
-    createYouTubePlayer(videoIDs[i], videoContainers[i]);
-  }
-}
+// // Hàm gọi khi Thư viện YouTube IFrame API đã được tải
+// function onYouTubeIframeAPIReady() {
+//   for (let i = 0; i < videoIDs.length; i++) {
+//     createYouTubePlayer(videoIDs[i], videoContainers[i]);
+//   }
+// }
 
 
 function toggleLists() {
