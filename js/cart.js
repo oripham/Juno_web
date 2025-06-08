@@ -115,7 +115,7 @@ export function beginCheckout() {
 }
 
 // Function to handle checkout
-async function handleCheckout() {
+export async function handleCheckout() {
     try {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         if (cart.length === 0) {
@@ -156,4 +156,9 @@ async function handleCheckout() {
         alert('Có lỗi xảy ra khi thanh toán. Vui lòng thử lại!');
     }
 }
+
+// Export all functions
+export {
+    addToCart, clearCart, getCart, removeFromCart, updateCartCount, updateQuantity
+};
 

@@ -5,21 +5,29 @@ const VND_TO_USD_RATE = 24000;
 
 // Initialize Google Analytics
 function initGA() {
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        dataLayer.push(arguments);
+    try {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', CONFIG.GA_TRACKING_ID);
+    } catch (error) {
+        console.warn('GA initialization error:', error);
     }
-    gtag('js', new Date());
-    gtag('config', CONFIG.GA_TRACKING_ID);
 }
 
 // Tracking Functions
 function trackEvent(eventName, eventParams = {}) {
-    if (typeof gtag !== 'undefined') {
-        console.log('GA Event:', eventName, eventParams); // Debug log
-        gtag('event', eventName, eventParams);
-    } else {
-        console.error('GA not initialized'); // Debug log
+    try {
+        if (typeof gtag !== 'undefined') {
+            console.log('GA Event:', eventName, eventParams); // Debug log
+            gtag('event', eventName, eventParams);
+        } else {
+            console.error('GA not initialized'); // Debug log
+        }
+    } catch (error) {
+        console.warn('Event tracking error:', error);
     }
 }
 
