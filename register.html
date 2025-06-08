@@ -10,6 +10,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRVQQ33EXS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GRVQQ33EXS');
+    </script>
     <style>
         .auth-container {
             max-width: 500px;
@@ -134,6 +142,10 @@
 
     <script type="module">
         import { register, getAuthStatus } from './js/auth.js';
+        import { CONFIG } from './js/config.js';
+        import { initGA } from './js/analytics.js';
+
+        initGA();
 
         // Kiểm tra nếu đã đăng nhập
         const { isAuthenticated } = getAuthStatus();

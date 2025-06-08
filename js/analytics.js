@@ -28,6 +28,31 @@ function trackPageView(pagePath, pageTitle) {
     });
 }
 
+// Track product image views
+function trackProductImageView(productId, imageIndex) {
+    trackEvent('product_image_view', {
+        'product_id': productId,
+        'image_index': imageIndex
+    });
+}
+
+// Track size/color selection
+function trackProductVariantSelection(productId, variantType, variantValue) {
+    trackEvent('product_variant_selection', {
+        'product_id': productId,
+        'variant_type': variantType, // 'size' or 'color'
+        'variant_value': variantValue
+    });
+}
+
+// Track wishlist interactions
+function trackWishlistInteraction(productId, action) {
+    trackEvent('wishlist_interaction', {
+        'product_id': productId,
+        'action': action // 'add' or 'remove'
+    });
+}
+
 // Track user engagement
 function trackSessionStart() {
     trackEvent('session_start', {
@@ -218,8 +243,8 @@ export {
     trackAddShippingInfo, trackAddToCart, trackBeginCheckout,
     trackEvent,
     trackFilter,
-    trackPageView,
-    trackPurchase,
+    trackPageView, trackProductImageView,
+    trackProductVariantSelection, trackPurchase,
     trackRemoveFromCart,
     trackSearch,
     trackSessionStart,
@@ -227,6 +252,6 @@ export {
     trackUserLogout,
     trackUserRegistration,
     trackViewItem,
-    trackViewItemList
+    trackViewItemList, trackWishlistInteraction
 };
 
