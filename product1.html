@@ -695,128 +695,34 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
             <script type="module">
                 import { CONFIG } from './js/config.js';
-                import { 
-                    trackViewItem, 
-                    trackProductImageView,
-                    trackProductVariantSelection,
-                    trackWishlistInteraction
-                } from './js/analytics.js';
-                import { addToCart, updateCartCount } from './js/cart.js';
-                import { isLoggedIn } from './js/auth.js';
-                
-                window.dataLayer = window.dataLayer || [];
+                import { trackViewItem } from './js/analytics.js';
+                import { addToCart } from './js/cart.js';
                 
                 // Get product information
                 const productName = document.querySelector('.product-title')?.innerText || '';
                 const productPrice = parseFloat(document.querySelector('.product-price')?.innerText?.replace(/[^\d]/g, '') || '0');
                 const productId = 'product1';
                 
-                console.log('Product data:', { // Debug log
-                    name: productName,
-                    price: productPrice,
-                    id: productId
-                });
-
                 // Track product view
-                const product = {
+                trackViewItem({
                     id: productId,
                     name: productName,
                     price: productPrice,
                     category: 'Shoes'
-                };
-
-                console.log('Tracking product view:', product); // Debug log
-                trackViewItem(product);
-
-                // Track product image views
-                const productImages = document.querySelectorAll('.product-image img');
-                productImages.forEach((img, index) => {
-                    img.addEventListener('click', () => {
-                        trackProductImageView(productId, index);
-                    });
                 });
-
-                // Track size selection
-                const sizeButtons = document.querySelectorAll('.size-button');
-                sizeButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        trackProductVariantSelection(productId, 'size', button.textContent.trim());
-                    });
-                });
-
-                // Track color selection
-                const colorButtons = document.querySelectorAll('.color-button');
-                colorButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        trackProductVariantSelection(productId, 'color', button.getAttribute('data-color'));
-                    });
-                });
-
-                // Track wishlist interactions
-                const wishlistButton = document.querySelector('.wishlist-button');
-                if (wishlistButton) {
-                    wishlistButton.addEventListener('click', () => {
-                        const isInWishlist = wishlistButton.classList.contains('active');
-                        trackWishlistInteraction(productId, isInWishlist ? 'remove' : 'add');
+                
+                // Add to cart button
+                const addToCartBtn = document.querySelector('.add-to-cart-btn');
+                if (addToCartBtn) {
+                    addToCartBtn.addEventListener('click', () => {
+                        addToCart({
+                            id: productId,
+                            name: productName,
+                            price: productPrice,
+                            category: 'Shoes'
+                        });
                     });
                 }
-                
-                // Lấy thông tin sản phẩm
-                function getProductPrice() {
-                    // Lấy giá từ giao diện (dòng giá đầu tiên trong phần chi tiết sản phẩm)
-                    const priceText = document.querySelector('.rightHeightProduct span[style*="font-size: 20px;"]')?.innerText || '';
-                    // Lấy số từ chuỗi, ví dụ: '637,000đ' => 637000
-                    return parseInt(priceText.replace(/[^\d]/g, '')) || 0;
-                }
-                const product = {
-                    id: 'product1',
-                    name: 'Đầm thun midi xoắn lưng',
-                    get price() { return getProductPrice(); },
-                    image: 'images/product4a.png',
-                    size: '',
-                    color: '',
-                    quantity: 1
-                };
-                
-                // Xử lý chọn màu
-                function changeColor1() {
-                    product.color = 'nâu';
-                }
-                
-                function changeColor2() {
-                    product.color = 'đen';
-                }
-                
-                // Xử lý chọn size
-                document.querySelectorAll('input[name="option2"]').forEach(input => {
-                    input.addEventListener('change', function() {
-                        product.size = this.value;
-                    });
-                });
-                
-                // Xử lý thêm vào giỏ hàng
-                document.getElementById('addToCartBtn').addEventListener('click', function() {
-                    // Lấy lại giá trị màu và size từ radio button đang được chọn
-                    const selectedColor = document.querySelector('input[name="option1"]:checked');
-                    const selectedSize = document.querySelector('input[name="option2"]:checked');
-                    product.color = selectedColor ? selectedColor.value : '';
-                    product.size = selectedSize ? selectedSize.value : '';
-
-                    if (!product.color) {
-                        alert('Vui lòng chọn màu sản phẩm!');
-                        return;
-                    }
-                    if (!product.size) {
-                        alert('Vui lòng chọn size sản phẩm!');
-                        return;
-                    }
-                    // Đảm bảo lấy giá mới nhất
-                    const productToAdd = { ...product, price: product.price };
-                    if (addToCart(productToAdd)) {
-                        alert('Đã thêm sản phẩm vào giỏ hàng!');
-                        updateCartCount();
-                    }
-                });
             </script>
     </body>
 </html>
