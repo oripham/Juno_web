@@ -3,4 +3,7 @@ export const CONFIG = {
     // Google Analytics Configuration
     GA_TRACKING_ID: 'G-GRVQQ33EXS',
 
+    // Currency Configuration
+    CURRENCY: 'USD',
+
 }; 

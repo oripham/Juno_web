@@ -1,5 +1,8 @@
 import { CONFIG } from './config.js';
 
+// Tỷ giá chuyển đổi VND sang USD (có thể cập nhật)
+const VND_TO_USD_RATE = 24000;
+
 // Initialize Google Analytics
 function initGA() {
     window.dataLayer = window.dataLayer || [];
@@ -60,19 +63,17 @@ function trackUserRegistration(userId) {
 function trackViewItem(product) {
     trackEvent('view_item', {
         'currency': CONFIG.CURRENCY,
-        'value': product.price,
+        'value': (product.price / VND_TO_USD_RATE),
         'items': [{
             'item_id': product.id,
             'item_name': product.name,
-            'price': product.price,
+            'price': (product.price / VND_TO_USD_RATE),
             'quantity': 1,
             'category': product.category || 'Fashion',
             'brand': CONFIG.BRAND,
             'variant': product.variant || '',
             'color': product.color || '',
-            'size': product.size || '',
-            'list_name': product.listName || 'Product Detail',
-            'list_position': product.position || 1
+            'size': product.size || ''
         }]
     });
 }
@@ -83,7 +84,7 @@ function trackViewItemList(products, listName) {
         'items': products.map((product, index) => ({
             'item_id': product.id,
             'item_name': product.name,
-            'price': product.price,
+            'price': (product.price / VND_TO_USD_RATE),
             'category': product.category || 'Fashion',
             'brand': CONFIG.BRAND,
             'variant': product.variant || '',
@@ -95,11 +96,11 @@ function trackViewItemList(products, listName) {
 function trackAddToCart(product) {
     trackEvent('add_to_cart', {
         'currency': CONFIG.CURRENCY,
-        'value': product.price * (product.quantity || 1),
+        'value': (product.price * (product.quantity || 1)) / VND_TO_USD_RATE,
         'items': [{
             'item_id': product.id,
             'item_name': product.name,
-            'price': product.price,
+            'price': (product.price / VND_TO_USD_RATE),
             'quantity': product.quantity || 1,
             'category': product.category || 'Fashion',
             'brand': CONFIG.BRAND,
@@ -113,11 +114,11 @@ function trackAddToCart(product) {
 function trackRemoveFromCart(product) {
     trackEvent('remove_from_cart', {
         'currency': CONFIG.CURRENCY,
-        'value': product.price * (product.quantity || 1),
+        'value': (product.price * (product.quantity || 1)) / VND_TO_USD_RATE,
         'items': [{
             'item_id': product.id,
             'item_name': product.name,
-            'price': product.price,
+            'price': (product.price / VND_TO_USD_RATE),
             'quantity': product.quantity || 1,
             'category': product.category || 'Fashion',
             'brand': CONFIG.BRAND,
@@ -132,11 +133,11 @@ function trackRemoveFromCart(product) {
 function trackBeginCheckout(cart) {
     trackEvent('begin_checkout', {
         'currency': CONFIG.CURRENCY,
-        'value': cart.total,
+        'value': cart.total / VND_TO_USD_RATE,
         'items': cart.items.map(item => ({
             'item_id': item.id,
             'item_name': item.name,
-            'price': item.price,
+            'price': item.price / VND_TO_USD_RATE,
             'quantity': item.quantity || 1,
             'category': item.category || 'Fashion',
             'brand': CONFIG.BRAND,
@@ -150,12 +151,12 @@ function trackBeginCheckout(cart) {
 function trackAddShippingInfo(cart) {
     trackEvent('add_shipping_info', {
         'currency': CONFIG.CURRENCY,
-        'value': cart.total,
+        'value': cart.total / VND_TO_USD_RATE,
         'shipping_tier': cart.shippingMethod || 'Standard',
         'items': cart.items.map(item => ({
             'item_id': item.id,
             'item_name': item.name,
-            'price': item.price,
+            'price': item.price / VND_TO_USD_RATE,
             'quantity': item.quantity || 1
         }))
     });
@@ -164,12 +165,12 @@ function trackAddShippingInfo(cart) {
 function trackAddPaymentInfo(cart) {
     trackEvent('add_payment_info', {
         'currency': CONFIG.CURRENCY,
-        'value': cart.total,
+        'value': cart.total / VND_TO_USD_RATE,
         'payment_type': cart.paymentMethod || 'Credit Card',
         'items': cart.items.map(item => ({
             'item_id': item.id,
             'item_name': item.name,
-            'price': item.price,
+            'price': item.price / VND_TO_USD_RATE,
             'quantity': item.quantity || 1
         }))
     });
@@ -178,7 +179,7 @@ function trackAddPaymentInfo(cart) {
 function trackPurchase(order) {
     trackEvent('purchase', {
         'transaction_id': order.id,
-        'currency': CONFIG.CURRENCY,
+        'currency': order.currency || CONFIG.CURRENCY,
         'value': order.total,
         'tax': order.tax || 0,
         'shipping': order.shipping || 0,
