@@ -16,7 +16,10 @@ function initGA() {
 // Tracking Functions
 function trackEvent(eventName, eventParams = {}) {
     if (typeof gtag !== 'undefined') {
+        console.log('GA Event:', eventName, eventParams); // Debug log
         gtag('event', eventName, eventParams);
+    } else {
+        console.error('GA not initialized'); // Debug log
     }
 }
 
@@ -119,6 +122,7 @@ function trackViewItemList(products, listName) {
 }
 
 function trackAddToCart(product) {
+    console.log('Add to cart attempt:', product); // Debug log
     trackEvent('add_to_cart', {
         'currency': CONFIG.CURRENCY,
         'value': (product.price * (product.quantity || 1)) / VND_TO_USD_RATE,
@@ -202,6 +206,7 @@ function trackAddPaymentInfo(cart) {
 }
 
 function trackPurchase(order) {
+    console.log('Purchase attempt:', order); // Debug log
     trackEvent('purchase', {
         'transaction_id': order.id,
         'currency': order.currency || CONFIG.CURRENCY,

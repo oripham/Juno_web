@@ -1,4 +1,4 @@
-import { trackAddToCart, trackBeginCheckout, trackRemoveFromCart } from './analytics.js';
+import { trackAddToCart, trackBeginCheckout, trackPurchase, trackRemoveFromCart } from './analytics.js';
 import { isLoggedIn } from './auth.js';
 
 // Cart management functions
@@ -112,5 +112,48 @@ export function beginCheckout() {
     trackBeginCheckout(cartData);
 
     return true;
+}
+
+// Function to handle checkout
+async function handleCheckout() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart.length === 0) {
+            alert('Giỏ hàng trống!');
+            return;
+        }
+
+        // Create order object
+        const order = {
+            id: 'ORD-' + Date.now(),
+            items: cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                category: item.category,
+                variant: item.variant,
+                color: item.color,
+                size: item.size
+            })),
+            total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+            currency: 'VND',
+            tax: 0,
+            shipping: 0
+        };
+
+        // Track purchase
+        trackPurchase(order);
+
+        // Clear cart after successful purchase
+        localStorage.removeItem('cart');
+        updateCartCount();
+
+        // Redirect to success page
+        window.location.href = 'success.html';
+    } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Có lỗi xảy ra khi thanh toán. Vui lòng thử lại!');
+    }
 }
 
