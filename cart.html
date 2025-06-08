@@ -1,18 +1,311 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juno.vn - Giỏ hàng</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="https://file.hstatic.net/1000003969/file/favicon-juno_8afc5c05a55941aa88438ce9264f03f3.png" type="image/png" />
+    <meta charset="utf-8" />
+    <title>GIỎ HÀNG CỦA BẠN</title>
+    <meta name="description" content="JUNO là thương hiệu giày thời trang nữ hàng đầu Việt Nam. Đến với JUNO, bạn sẽ dễ dàng chọn cho mình một sản phẩm giày hiệu chất lượng và cực kỳ phong cách." />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SNZQ5TRSY3"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js"></script>
     <script type="module">
+        import { CONFIG } from './js/config.js';
         import { initGA } from './js/analytics.js';
+        import { getCart, removeFromCart, updateQuantity } from './js/cart.js';
+        import { trackPurchase } from './js/analytics.js';
+        
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', CONFIG.GA_TRACKING_ID);
+        
         initGA();
+        
+        // Display cart items
+        function displayCart() {
+            const cart = getCart();
+            const cartContainer = document.getElementById('cartItems');
+            const totalElement = document.getElementById('cartTotal');
+            const shippingFee = 20000; // 20,000 VND
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Giỏ hàng của bạn đang trống</p>';
+                totalElement.textContent = '0 VND';
+                document.getElementById('shippingFee').textContent = '0 VND';
+                document.getElementById('finalTotal').textContent = '0 VND';
+                return;
+            }
+            
+            let total = 0;
+            cartContainer.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                return `
+                    <tr>
+                        <td width="20%">
+                            <div style="position:relative;">
+                                <a href="product${item.id}.html">
+                                    <img src="${item.image || 'images/default-product.jpg'}" alt="${item.name}">
+                                </a>
+                            </div>
+                        </td>
+                        <td width="40%">
+                            <div style="position:relative; margin-left: 15px; border-top: 0; padding: 20px 0; vertical-align: top;">
+                                <h3 style="margin: 0 0 5px; font-size: 16px; font-weight: bold; display: inline;">${item.name}</h3>
+                                <p class="variant">
+                                    <span>Size: ${item.size || 'N/A'}</span>
+                                    <br>
+                                    <span>Color: ${item.color || 'N/A'}</span>
+                                </p>
+                                <div class="quantity-controls">
+                                    <button onclick="updateItemQuantity('${item.id}', ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                                    <span>${item.quantity}</span>
+                                    <button onclick="updateItemQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                                    <button onclick="removeItem('${item.id}')" class="remove-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div style="margin-top: 0px; font-weight: bold; margin-bottom: 40px;">
+                                <span style="color:red;">${item.price.toLocaleString('vi-VN')} VND</span>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div style="margin-top: 0px; font-weight: bold; margin-bottom: 40px;">
+                                <span style="color:red;">${itemTotal.toLocaleString('vi-VN')} VND</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Update totals
+            document.getElementById('shippingFee').textContent = `${shippingFee.toLocaleString('vi-VN')} VND`;
+            totalElement.textContent = `${total.toLocaleString('vi-VN')} VND`;
+            document.getElementById('finalTotal').textContent = `${(total + shippingFee).toLocaleString('vi-VN')} VND`;
+        }
+        
+        // Initialize cart display
+        document.addEventListener('DOMContentLoaded', displayCart);
+        
+        // Make functions available globally
+        window.updateItemQuantity = function(productId, newQuantity) {
+            if (newQuantity > 0) {
+                updateQuantity(productId, newQuantity);
+                displayCart();
+            }
+        };
+        
+        window.removeItem = function(productId) {
+            removeFromCart(productId);
+            displayCart();
+        };
+        
+        // Handle checkout
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Giỏ hàng của bạn đang trống!');
+                return;
+            }
+            // Tạo thông tin đơn hàng mẫu
+            const order = {
+                id: 'ORDER-' + Date.now(), // Mã đơn hàng ngẫu nhiên
+                total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + 20000, // Tổng tiền hàng + phí ship
+                tax: 0,
+                shipping: 20000,
+                items: cart
+            };
+            // Gửi sự kiện purchase lên Google Analytics
+            trackPurchase(order);
+            alert('Cảm ơn bạn đã đặt hàng! Đơn hàng đã được ghi nhận.');
+            // Sau khi đặt hàng có thể clear giỏ hàng nếu muốn
+            clearCart();
+        });
     </script>
 </head>
 <body>
-    <!-- Rest of the file remains unchanged -->
+    
+    <div class="main-body">
+        <div>
+            <div style="position: absolute; z-index: 999; width: 100%;">
+                <header class="main-header clear-fix affix-mobile">
+                    <div class="no-padding" style="width: 16.66666667%; position: relative; min-height: 1px; float: left">
+                        <div style="margin-left: 30px; align-items: center; display: flex;">
+                            <div style="margin: 17px 0 0 0; float: left; width: 100%;" class="wrap-logo">
+                                <a href="index.html">
+                                    <img id="logo" src="images/logo-svg.svg" alt="JUNO" class="img-responsive logoimg"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="no-padding" style="width: 66.66666667%; position: relative; min-height: 1px; float:left">
+                        <div style="position: relative; display: flex; justify-content: center;">
+                            <div id = "nav">
+                                <nav class = "main-nav" style="position: relative; text-align: center; display: block">
+                                    <ul style="text-align: center;">
+                                        <li style="float: left;">
+                                            <a data-eventLabel="Hàng Mới" href="newProduct.html" title="Hàng Mới">HÀNG MỚI</a>
+                                        </li>
+                                        <li style="float: left">
+                                            <a data-eventLabel="Sản Phẩm" href="newProduct.html" title="Sản Phẩm">SẢN PHẨM</a>
+                                            <ul class="sub_menu megaMenu" style="top: 61px">
+                                                <div class="container">
+                                                    <div style="width: 16.66666667%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                                                        <a href="#" style="margin-top: -2px;">GIÀY</a>
+                                                        <ul>
+                                                            <li><a href="#">Giày Cao Gót</a></li>
+                                                            <li><a href="#">Sandals</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div style="width: 16.66666667%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                                                        <a href="#" style="margin-top: -2px;">TÚI</a>
+                                                        <ul>
+                                                            <li><a href="#">Túi cỡ nhỏ</a></li>
+                                                            <li><a href="#">Túi cỡ trung</a></li>
+                                                            <li><a href="#">Túi cỡ lớn</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div style="width: 16.66666667%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                                                        <a href="#" style="margin-top: -2px;">PHỤ KIỆN</a>
+                                                        <ul>
+                                                            <li><a href="#">Mắt kính</a></li>
+                                                            <li><a href="#">Vớ</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div style="width: 16.66666667%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                                                        <a href="#" style="margin-top: -2px;">QUẦN ÁO</a>
+                                                        <ul>
+                                                            <li><a href="#">Áo</a></li>
+                                                            <li><a href="#">Váy</a></li>
+                                                            <li><a href="#">Quần</a></li>
+                                                            <li><a href="#">Khoác</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div style="width: 16.66666667%; float: left; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                                                        <a href="collection.html" style="margin-top: -2px;">BỘ SƯU TẬP</a>
+                                                        <ul>
+                                                            <li><a href="#">Lady Moon</a></li>
+                                                            <li><a href="#">Panorama City</a></li>
+                                                            <li><a href="#">Take Me To Summer</a></li>
+                                                            <li><a href="#">Shake It Up</a></li>
+                                                            <li><a href="#">JoyFul</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </li>
+                                        <li style="float: left;"class = "boldSale">
+                                            <a data-eventLabel="Siêu Sale Dưỡng Xinh" href="Sale.html" title="Sale">Siêu SALE Dưỡng Xinh</a>
+                                        </li>
+                                        <li style="float: left;" class="boldSale">
+                                            <a data-eventLabel="Sale quần áo từ 99k" href="#" title="Sale quần áo từ 99k">Sale quần áo từ 99k</a>
+                                        </li>
+                                        <li style="float: left">
+                                            <a data-eventLabel="Showroom" href="showroom.html" title="Showroom">SHOWROOM</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0; width: 8.33333333%; float: left; position: relative; min-height: 1px;">
+                        <div style="position: relative; margin: 11px 0 0 0;">
+                            <form class="searchHeader searchDesktop" action="/search">
+                                <div class="searchBox">
+                                    <input type="hidden" name="type" value="product" />
+                                    <input autocomplete="off" type="text" name="q" class="searchInput" placeholder="Tìm kiếm" value>
+                                    <span  class="btnSearch">
+                                        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11.3457 5.49982C11.3457 8.26112 9.10717 10.4996 6.34572 10.4996C3.58427 10.4996 1.3457 8.26112 1.3457 5.49982C1.3457 2.73851 3.58427 0.5 6.34572 0.5C9.10717 0.5 11.3457 2.73851 11.3457 5.49982Z" stroke="#2D2D2D"/>
+                                            <line y1="-0.5" x2="4.94967" y2="-0.5" transform="matrix(0.70712 0.707094 -0.70712 0.707094 9.3457 9.50012)" stroke="#2D2D2D" stroke-linejoin="round"/> 
+                                        </svg>
+                                    </span>
+                                </div>
+                            <div id="resultSearchDesktop" class="resultDesktop">
+                                <div class="innerResultDesktop"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div style="margin-top: 18px; padding: 0 20px; width: 8.33333333%; float : left;">
+                        <span style="padding: 0 3px; cursor: pointer">
+                            <a href="login.html">
+                                <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.99952 8C4.79727 8 2.98828 6.19608 2.98828 4C2.98828 1.80392 4.79727 0 6.99952 0C9.20176 0 11.0108 1.80392 11.0108 4C11.0108 6.19608 9.20176 8 6.99952 8ZM6.99952 1.01961C5.34783 1.01961 4.01075 2.35294 4.01075 4C4.01075 5.64706 5.34783 6.98039 6.99952 6.98039C8.6512 6.98039 9.98828 5.64706 9.98828 4C9.98828 2.35294 8.6512 1.01961 6.99952 1.01961Z" fill="#2D2D2D"/>
+                                    <path d="M13.5281 15.9998H0.47191C0.157303 15.9998 0 15.7645 0 15.5292V12.0782C0 11.5292 0.235955 11.0586 0.707865 10.8233C4.48315 8.47036 9.59551 8.47036 13.3708 10.8233C13.764 11.0586 14.0787 11.6076 14.0787 12.0782V15.5292C14 15.7645 13.764 15.9998 13.5281 15.9998ZM1.02247 14.9802H13.0562V12.0782C13.0562 11.9213 12.9775 11.7645 12.8202 11.686C9.35955 9.5684 4.7191 9.5684 1.25843 11.686C1.10112 11.7645 1.02247 11.9213 1.02247 12.0782V14.9802Z" fill="#2D2D2D"/>
+                                </svg>
+                            </a>
+                        </span>
+                        <span style="padding: 0 3px; cursor: pointer; position: relative; text-align: right;">
+                            <a href="cart.html">
+                                <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15 16H0V5H15V16ZM0.789474 15.1665H14.1228V5.84209H0.789474V15.1665Z" fill="#2D2D2D"/>
+                                    <path d="M11.1586 7.25279H10.4849V3.78071C10.4849 2.08325 9.13752 0.694416 7.49074 0.694416C5.84395 0.694416 4.49658 2.08325 4.49658 3.78071V7.17563H3.74805V3.78071C3.74805 1.69746 5.39483 0 7.49074 0C9.58664 0 11.2334 1.69746 11.2334 3.78071V7.25279H11.1586Z" fill="#2D2D2D"/>
+                                    <path d="M5.09591 6.48145H3V7.25302H5.09591V6.48145Z" fill="#2D2D2D"/>
+                                    <path d="M11.8322 6.48145H9.73633V7.25302H11.8322V6.48145Z" fill="#2D2D2D"/>
+                                </svg>
+                                <span class="cart-count" style="position: absolute; color: black; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -62%);">
+                                    <span style="font-size: 9px; transition: top 150ms linear; animation-duration: 300ms;">0</span>
+                                </span>
+                            </a>
+                        </span>
+                    </div>
+                </header>
+            </div>
+            <main style="position: relative; z-index: 99; overflow-x: hidden; margin: 100px;">
+                <div class="container-fluid">
+                    <div style="padding-top: 30px; padding-bottom: 30px;">
+                        <div style="max-width: 1175px; width: auto; padding: 0;">
+                            <div style="margin: 0 0 15px 0;">
+                                <h1>GIỎ HÀNG CỦA BẠN</h1>
+                            </div>
+                        </div>
+                        <div style="margin-left: -15px; margin-right: -15px;">
+                            <div style="width: 66.66666667%; float: left;">
+                                <table style="margin-bottom: 30px; width: 100%; border-spacing: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th width="20%"></th>
+                                            <th width="40%"></th>
+                                            <th width="20%"></th>
+                                            <th width="20%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cartItems"></tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 50px; width: 33.33333333%; float: left; border: 1px solid black; background: #d6cbcb;" class="customize">
+                                <div class="clear-fix" style="padding: 20px 30px 20px 20px !important; float: left;">
+                                    <p>
+                                        <span>Phí vận chuyển: </span>
+                                        <span style="float: right; margin-left: 100px;" id="shippingFee">0 VND</span>
+                                    </p>
+                                    <p>
+                                        <span><b>Tổng tiền hàng:</b></span>
+                                        <span style="float: right; margin-left: 100px;"><b id="cartTotal">0 VND</b></span>
+                                    </p>
+                                    <p>
+                                        <span><b>Tổng thanh toán:</b></span>
+                                        <span style="float: right; margin-left: 100px;"><b id="finalTotal">0 VND</b></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="submit" id="checkoutBtn" class="btnBuyNow" style="float: left;">TIẾN HÀNH ĐẶT HÀNG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
 </body>
 </html> 

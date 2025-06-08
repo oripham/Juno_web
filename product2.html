@@ -117,7 +117,7 @@
                         </div>
                         <div style="margin-top: 18px; padding: 0 20px; width: 8.33333333%; float : left;">
                             <span style="padding: 0 3px; cursor: pointer">
-                                <a href="account.html">
+                                <a href="login.html">
                                     <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6.99952 8C4.79727 8 2.98828 6.19608 2.98828 4C2.98828 1.80392 4.79727 0 6.99952 0C9.20176 0 11.0108 1.80392 11.0108 4C11.0108 6.19608 9.20176 8 6.99952 8ZM6.99952 1.01961C5.34783 1.01961 4.01075 2.35294 4.01075 4C4.01075 5.64706 5.34783 6.98039 6.99952 6.98039C8.6512 6.98039 9.98828 5.64706 9.98828 4C9.98828 2.35294 8.6512 1.01961 6.99952 1.01961Z" fill="#2D2D2D"/>
                                         <path d="M13.5281 15.9998H0.47191C0.157303 15.9998 0 15.7645 0 15.5292V12.0782C0 11.5292 0.235955 11.0586 0.707865 10.8233C4.48315 8.47036 9.59551 8.47036 13.3708 10.8233C13.764 11.0586 14.0787 11.6076 14.0787 12.0782V15.5292C14 15.7645 13.764 15.9998 13.5281 15.9998ZM1.02247 14.9802H13.0562V12.0782C13.0562 11.9213 12.9775 11.7645 12.8202 11.686C9.35955 9.5684 4.7191 9.5684 1.25843 11.686C1.10112 11.7645 1.02247 11.9213 1.02247 12.0782V14.9802Z" fill="#2D2D2D"/>
@@ -125,7 +125,7 @@
                                 </a>
                             </span>
                             <span style="padding: 0 3px; cursor: pointer; position: relative; text-align: right;">
-                                <a href="basket.html">
+                                <a href="cart.html">
                                     <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M15 16H0V5H15V16ZM0.789474 15.1665H14.1228V5.84209H0.789474V15.1665Z" fill="#2D2D2D"/>
                                         <path d="M11.1586 7.25279H10.4849V3.78071C10.4849 2.08325 9.13752 0.694416 7.49074 0.694416C5.84395 0.694416 4.49658 2.08325 4.49658 3.78071V7.17563H3.74805V3.78071C3.74805 1.69746 5.39483 0 7.49074 0C9.58664 0 11.2334 1.69746 11.2334 3.78071V7.25279H11.1586Z" fill="#2D2D2D"/>
@@ -240,9 +240,9 @@
                                                             <span style="margin-top: 10px; text-decoration: underline; font-size: 11px;">
                                                                 <a href="#" style="cursor: pointer;">Hướng dẫn tính size</a>
                                                             </span>
-                                                            <div class="clear-fix" style="margin: 20px 0 0 0;">
-                                                                <button class="btnBuyNow" style="cursor: pointer;" onclick="addBasket(3)">MUA NGAY</button>
-                                                            </div>
+                                                            <button id="addToCartBtn" class="btnBuyNow">
+                                                                <i class="fa-solid fa-cart-shopping"></i> THÊM GIỎ HÀNG
+                                                            </button>
                                                             
                                                         </form>
                                                         <button class="btnFindPlace">
@@ -251,6 +251,7 @@
                                                         <div style="margin: 15px 0;">
                                                             <b>Đăng nhập</b> để tích điểm và hưởng quyền lợi thành viên
                                                         </div>
+                                                        
                                                         <ul class="policyProduct">
                                                             <li>
                                                                 <span class="infoPolicy">
@@ -682,19 +683,72 @@
             </div>
                
         </div>
+            <script src=script.js></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-            <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-SNZQ5TRSY3');
-            gtag('event', 'view_item', {
-              items: [{
-                item_id: 'product2',
-                item_name: document.querySelector('.product-title')?.innerText || '',
-              }]
-            });
+            <script type="module">
+                import { CONFIG } from './js/config.js';
+                import { trackViewItem } from './js/analytics.js';
+                import { addToCart } from './js/cart.js';
+                
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', CONFIG.GA_TRACKING_ID);
+                
+                // Get product information
+                const productName = document.querySelector('.product-title')?.innerText || '';
+                const productPrice = parseFloat(document.querySelector('.product-price')?.innerText?.replace(/[^\d]/g, '') || '0');
+                const productId = 'product2';
+                
+                // Track product view
+                trackViewItem({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    category: 'Shoes'
+                });
+                
+                // Lấy thông tin sản phẩm
+                function getProductPrice() {
+                    // Lấy giá từ giao diện (dòng giá đầu tiên trong phần chi tiết sản phẩm)
+                    const priceText = document.querySelector('.rightHeightProduct span[style*="font-size: 20px;"]')?.innerText || '';
+                    // Lấy số từ chuỗi, ví dụ: '882,000đ' => 882000
+                    return parseInt(priceText.replace(/[^\d]/g, '')) || 0;
+                }
+                const product = {
+                    id: 'product2',
+                    name: 'Túi Xách Trung Lock & Key',
+                    get price() { return getProductPrice(); },
+                    image: 'images/product2a.png',
+                    size: '',
+                    color: '',
+                    quantity: 1
+                };
+                
+                // Xử lý thêm vào giỏ hàng
+                document.getElementById('addToCartBtn').addEventListener('click', function() {
+                    // Lấy lại giá trị màu và size từ radio button đang được chọn
+                    const selectedColor = document.querySelector('input[name="option1"]:checked');
+                    const selectedSize = document.querySelector('input[name="option2"]:checked');
+                    product.color = selectedColor ? selectedColor.value : '';
+                    product.size = selectedSize ? selectedSize.value : '';
+
+                    if (!product.color) {
+                        alert('Vui lòng chọn màu sản phẩm!');
+                        return;
+                    }
+                    if (!product.size) {
+                        alert('Vui lòng chọn size sản phẩm!');
+                        return;
+                    }
+                    // Đảm bảo lấy giá mới nhất
+                    const productToAdd = { ...product, price: product.price };
+                    if (addToCart(productToAdd)) {
+                        alert('Đã thêm sản phẩm vào giỏ hàng!');
+                        updateCartCount();
+                    }
+                });
             </script>
     </body>
 </html>

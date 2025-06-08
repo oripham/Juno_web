@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="shortcut icon" href="https://file.hstatic.net/1000003969/file/favicon-juno_8afc5c05a55941aa88438ce9264f03f3.png" type="image/png" />
+    <meta charset="utf-8" />
+    <title>ĐĂNG KÝ - JUNO</title>
+    <meta name="description" content="JUNO là thương hiệu giày thời trang nữ hàng đầu Việt Nam. Đến với JUNO, bạn sẽ dễ dàng chọn cho mình một sản phẩm giày hiệu chất lượng và cực kỳ phong cách." />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .auth-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn-register {
+            width: 100%;
+            padding: 10px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-register:hover {
+            background-color: #333;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-body">
+        <div>
+            <div style="position: absolute; z-index: 999; width: 100%;">
+                <header class="main-header clear-fix affix-mobile">
+                    <div class="no-padding" style="width: 16.66666667%; position: relative; min-height: 1px; float: left">
+                        <div style="margin-left: 30px; align-items: center; display: flex;">
+                            <div style="margin: 17px 0 0 0; float: left; width: 100%;" class="wrap-logo">
+                                <a href="index.html">
+                                    <img id="logo" src="images/logo-svg.svg" alt="JUNO" class="img-responsive logoimg"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <main style="position: relative; z-index: 99; overflow-x: hidden; margin: 100px;">
+                <div class="auth-container">
+                    <div class="auth-form">
+                        <h2 style="text-align: center; margin-bottom: 20px;">ĐĂNG KÝ TÀI KHOẢN</h2>
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label for="username">Tên đăng nhập:</label>
+                                <input type="text" id="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Mật khẩu:</label>
+                                <input type="password" id="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                                <input type="password" id="confirmPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fullName">Họ và tên:</label>
+                                <input type="text" id="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Giới tính:</label>
+                                <select id="gender" required>
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Tuổi:</label>
+                                <input type="number" id="age" min="1" max="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Địa chỉ:</label>
+                                <input type="text" id="address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Số điện thoại:</label>
+                                <input type="tel" id="phone" required>
+                            </div>
+                            <button type="submit" class="btn-register">ĐĂNG KÝ</button>
+                            <div id="errorMessage" class="error-message"></div>
+                        </form>
+                        <div class="login-link">
+                            <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module">
+        import { register, getAuthStatus } from './js/auth.js';
+
+        // Kiểm tra nếu đã đăng nhập
+        const { isAuthenticated } = getAuthStatus();
+        if (isAuthenticated) {
+            window.location.href = 'profile.html';
+        }
+
+        // Xử lý form đăng ký
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('email').value;
+            const fullName = document.getElementById('fullName').value;
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Kiểm tra mật khẩu
+            if (password !== confirmPassword) {
+                errorMessage.textContent = 'Mật khẩu xác nhận không khớp';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            const result = register({
+                username,
+                password,
+                email,
+                fullName,
+                gender,
+                age,
+                address,
+                phone
+            });
+            
+            if (result.success) {
+                window.location.href = 'login.html';
+            } else {
+                errorMessage.textContent = result.message;
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="shortcut icon" href="https://file.hstatic.net/1000003969/file/favicon-juno_8afc5c05a55941aa88438ce9264f03f3.png" type="image/png" />
+    <meta charset="utf-8" />
+    <title>THÔNG TIN TÀI KHOẢN - JUNO</title>
+    <meta name="description" content="JUNO là thương hiệu giày thời trang nữ hàng đầu Việt Nam. Đến với JUNO, bạn sẽ dễ dàng chọn cho mình một sản phẩm giày hiệu chất lượng và cực kỳ phong cách." />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .btn-logout {
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-logout:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-body">
+        <div>
+            <div style="position: absolute; z-index: 999; width: 100%;">
+                <header class="main-header clear-fix affix-mobile">
+                    <div class="no-padding" style="width: 16.66666667%; position: relative; min-height: 1px; float: left">
+                        <div style="margin-left: 30px; align-items: center; display: flex;">
+                            <div style="margin: 17px 0 0 0; float: left; width: 100%;" class="wrap-logo">
+                                <a href="index.html">
+                                    <img id="logo" src="images/logo-svg.svg" alt="JUNO" class="img-responsive logoimg"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <main style="position: relative; z-index: 99; overflow-x: hidden; margin: 100px;">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <h2>THÔNG TIN TÀI KHOẢN</h2>
+                        <button id="logoutBtn" class="btn-logout">ĐĂNG XUẤT</button>
+                    </div>
+                    <div class="profile-info">
+                        <div class="info-group">
+                            <label>Họ và tên:</label>
+                            <div id="fullName"></div>
+                        </div>
+                        <div class="info-group">
+                            <label>Email:</label>
+                            <div id="email"></div>
+                        </div>
+                        <div class="info-group">
+                            <label>Giới tính:</label>
+                            <div id="gender"></div>
+                        </div>
+                        <div class="info-group">
+                            <label>Tuổi:</label>
+                            <div id="age"></div>
+                        </div>
+                        <div class="info-group">
+                            <label>Địa chỉ:</label>
+                            <div id="address"></div>
+                        </div>
+                        <div class="info-group">
+                            <label>Số điện thoại:</label>
+                            <div id="phone"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getAuthStatus, logout } from './js/auth.js';
+
+        // Kiểm tra đăng nhập
+        function checkAuth() {
+            const { isAuthenticated, currentUser } = getAuthStatus();
+            if (!isAuthenticated || !currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Hiển thị thông tin người dùng
+            document.getElementById('fullName').textContent = currentUser.fullName;
+            document.getElementById('email').textContent = currentUser.email;
+            document.getElementById('gender').textContent = currentUser.gender;
+            document.getElementById('age').textContent = currentUser.age;
+            document.getElementById('address').textContent = currentUser.address;
+            document.getElementById('phone').textContent = currentUser.phone;
+        }
+
+        // Xử lý đăng xuất
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            const result = logout();
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Kiểm tra đăng nhập khi trang được tải
+        checkAuth();
+    </script>
+</body>
+</html> 
