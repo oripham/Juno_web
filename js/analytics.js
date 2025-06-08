@@ -37,6 +37,8 @@ function trackViewItem(product) {
             'category': product.category,
             'brand': 'JUNO',
             'variant': product.variant || '',
+            'color': product.color || '',
+            'size': product.size || '',
             'list_name': product.listName || 'Product Detail',
             'list_position': product.position || 1
         }]
@@ -66,7 +68,12 @@ function trackAddToCart(product) {
             'item_id': product.id,
             'item_name': product.name,
             'price': product.price,
-            'quantity': 1
+            'quantity': product.quantity || 1,
+            'category': product.category,
+            'brand': 'JUNO',
+            'variant': product.variant || '',
+            'color': product.color || '',
+            'size': product.size || ''
         }]
     });
 }
@@ -79,7 +86,12 @@ function trackBeginCheckout(cart) {
             'item_id': item.id,
             'item_name': item.name,
             'price': item.price,
-            'quantity': item.quantity
+            'quantity': item.quantity || 1,
+            'category': item.category,
+            'brand': 'JUNO',
+            'variant': item.variant || '',
+            'color': item.color || '',
+            'size': item.size || ''
         }))
     });
 }
@@ -93,7 +105,12 @@ function trackPurchase(order) {
             'item_id': item.id,
             'item_name': item.name,
             'price': item.price,
-            'quantity': item.quantity
+            'quantity': item.quantity || 1,
+            'category': item.category,
+            'brand': 'JUNO',
+            'variant': item.variant || '',
+            'color': item.color || '',
+            'size': item.size || ''
         }))
     });
 }
