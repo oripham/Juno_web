@@ -854,6 +854,20 @@
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
             <script src="script.js"></script>
+            <script>
+                // Theo dõi click vào sản phẩm (ảnh hoặc tên sản phẩm)
+                document.querySelectorAll('.product-block a').forEach(function(el) {
+                    el.addEventListener('click', function() {
+                    // Lấy tên sản phẩm từ alt của ảnh hoặc text của thẻ h3
+                    var img = el.querySelector('img');
+                    var productName = img ? img.alt : (el.textContent || 'Unknown');
+                    gtag('event', 'select_product', {
+                        'event_category': 'Product',
+                        'event_label': productName
+                    });
+                    });
+                });
+            </script>
     </body>
     
 </html>
