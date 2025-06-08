@@ -696,14 +696,13 @@
             <script type="module">
                 import { CONFIG } from './js/config.js';
                 import { 
-                    trackViewItem, 
-                    trackProductImageView,
-                    trackProductVariantSelection,
-                    trackWishlistInteraction
+                    trackViewItem,
+                    // trackProductImageView,
+                    // trackProductVariantSelection,
+                    // trackWishlistInteraction
                 } from './js/analytics.js';
-                import { addToCart } from './js/cart.js';
-                
-                window.dataLayer = window.dataLayer || [];
+                import { addToCart, updateCartCount } from './js/cart.js';
+                import { isLoggedIn } from './js/auth.js';
                 
                 // Get product information
                 const productName = document.querySelector('.product-title')?.innerText || '';
@@ -719,48 +718,48 @@
                 });
 
                 // Track product image views
-                const productImages = document.querySelectorAll('.product-image img');
-                productImages.forEach((img, index) => {
-                    img.addEventListener('click', () => {
-                        trackProductImageView(productId, index);
-                    });
-                });
+                // const productImages = document.querySelectorAll('.product-image img');
+                // productImages.forEach((img, index) => {
+                //     img.addEventListener('click', () => {
+                //         trackProductImageView(productId, index);
+                //     });
+                // });
 
                 // Track size selection
-                const sizeButtons = document.querySelectorAll('.size-button');
-                sizeButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        trackProductVariantSelection(productId, 'size', button.textContent.trim());
-                    });
-                });
+                // const sizeButtons = document.querySelectorAll('.size-button');
+                // sizeButtons.forEach(button => {
+                //     button.addEventListener('click', () => {
+                //         trackProductVariantSelection(productId, 'size', button.textContent.trim());
+                //     });
+                // });
 
                 // Track color selection
-                const colorButtons = document.querySelectorAll('.color-button');
-                colorButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        trackProductVariantSelection(productId, 'color', button.getAttribute('data-color'));
-                    });
-                });
+                // const colorButtons = document.querySelectorAll('.color-button');
+                // colorButtons.forEach(button => {
+                //     button.addEventListener('click', () => {
+                //         trackProductVariantSelection(productId, 'color', button.getAttribute('data-color'));
+                //     });
+                // });
 
                 // Track wishlist interactions
-                const wishlistButton = document.querySelector('.wishlist-button');
-                if (wishlistButton) {
-                    wishlistButton.addEventListener('click', () => {
-                        const isInWishlist = wishlistButton.classList.contains('active');
-                        trackWishlistInteraction(productId, isInWishlist ? 'remove' : 'add');
-                    });
-                }
+                // const wishlistButton = document.querySelector('.wishlist-button');
+                // if (wishlistButton) {
+                //     wishlistButton.addEventListener('click', () => {
+                //         const isInWishlist = wishlistButton.classList.contains('active');
+                //         trackWishlistInteraction(productId, isInWishlist ? 'remove' : 'add');
+                //     });
+                // }
                 
                 // Lấy thông tin sản phẩm
                 function getProductPrice() {
                     // Lấy giá từ giao diện (dòng giá đầu tiên trong phần chi tiết sản phẩm)
                     const priceText = document.querySelector('.rightHeightProduct span[style*="font-size: 20px;"]')?.innerText || '';
-                    // Lấy số từ chuỗi, ví dụ: '843,000đ' => 843000
+                    // Lấy số từ chuỗi, ví dụ: '882,000đ' => 882000
                     return parseInt(priceText.replace(/[^\d]/g, '')) || 0;
                 }
                 const product = {
                     id: 'product3',
-                    name: 'Túi Xách Nhỏ Top Handle Lock & Key',
+                    name: 'Đầm thun midi xoắn lưng',
                     get price() { return getProductPrice(); },
                     image: 'images/product3a.png',
                     size: '',
@@ -770,6 +769,9 @@
                 
                 // Xử lý thêm vào giỏ hàng
                 document.getElementById('addToCartBtn').addEventListener('click', function() {
+                    console.log('Nút thêm vào giỏ hàng được nhấp.');
+                    console.log('Trạng thái đăng nhập:', isLoggedIn());
+
                     // Lấy lại giá trị màu và size từ radio button đang được chọn
                     const selectedColor = document.querySelector('input[name="option1"]:checked');
                     const selectedSize = document.querySelector('input[name="option2"]:checked');
@@ -786,10 +788,9 @@
                     }
                     // Đảm bảo lấy giá mới nhất
                     const productToAdd = { ...product, price: product.price };
-                    if (addToCart(productToAdd)) {
-                        alert('Đã thêm sản phẩm vào giỏ hàng!');
-                        updateCartCount();
-                    }
+                    addToCart(productToAdd);
+                    alert('Đã thêm sản phẩm vào giỏ hàng!');
+                    updateCartCount();
                 });
             </script>
     </body>

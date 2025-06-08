@@ -24,6 +24,31 @@ function trackPageView(pagePath, pageTitle) {
     }
 }
 
+// Track user login
+function trackUserLogin(userId) {
+    if (typeof gtag === 'function') {
+        gtag('event', 'login', {
+            method: 'email'
+        });
+    }
+}
+
+// Track user registration
+function trackUserRegistration(userId) {
+    if (typeof gtag === 'function') {
+        gtag('event', 'sign_up', {
+            method: 'email'
+        });
+    }
+}
+
+// Track user logout
+function trackUserLogout() {
+    if (typeof gtag === 'function') {
+        gtag('event', 'logout');
+    }
+}
+
 // Track product views
 function trackViewItem(product) {
     if (typeof gtag === 'function' && product) {
@@ -81,6 +106,6 @@ function trackPurchase(order) {
 
 // Export functions
 export {
-    initGA, trackAddToCart, trackPageView, trackPurchase, trackViewItem
+    initGA, trackAddToCart, trackPageView, trackPurchase, trackUserLogin, trackUserLogout, trackUserRegistration, trackViewItem
 };
 
