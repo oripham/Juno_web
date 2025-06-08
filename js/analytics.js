@@ -8,26 +8,31 @@ function initGA() {
     try {
         window.dataLayer = window.dataLayer || [];
         function gtag() {
+            console.log('gtag called with args:', arguments); // Debug log
             dataLayer.push(arguments);
         }
+        window.gtag = gtag; // Make gtag globally available
         gtag('js', new Date());
         gtag('config', CONFIG.GA_TRACKING_ID);
+        console.log('GA initialized with ID:', CONFIG.GA_TRACKING_ID); // Debug log
     } catch (error) {
-        console.warn('GA initialization error:', error);
+        console.error('GA initialization error:', error);
     }
 }
 
 // Tracking Functions
 function trackEvent(eventName, eventParams = {}) {
     try {
-        if (typeof gtag !== 'undefined') {
-            console.log('GA Event:', eventName, eventParams); // Debug log
-            gtag('event', eventName, eventParams);
+        console.log('trackEvent called:', eventName, eventParams); // Debug log
+        if (typeof window.gtag === 'function') {
+            console.log('Calling gtag with event:', eventName); // Debug log
+            window.gtag('event', eventName, eventParams);
+            console.log('gtag call completed'); // Debug log
         } else {
-            console.error('GA not initialized'); // Debug log
+            console.error('gtag is not a function:', typeof window.gtag); // Debug log
         }
     } catch (error) {
-        console.warn('Event tracking error:', error);
+        console.error('Event tracking error:', error);
     }
 }
 
@@ -97,21 +102,51 @@ function trackUserRegistration(userId) {
 
 // Track product interactions
 function trackViewItem(product) {
-    trackEvent('view_item', {
-        'currency': CONFIG.CURRENCY,
-        'value': (product.price / VND_TO_USD_RATE),
-        'items': [{
-            'item_id': product.id,
-            'item_name': product.name,
-            'price': (product.price / VND_TO_USD_RATE),
-            'quantity': 1,
-            'category': product.category || 'Fashion',
-            'brand': CONFIG.BRAND,
-            'variant': product.variant || '',
-            'color': product.color || '',
-            'size': product.size || ''
-        }]
-    });
+    try {
+        console.log('trackViewItem called with product:', product); // Debug log
+        
+        // Validate product data
+        if (!product) {
+            console.error('Product is null or undefined');
+            return;
+        }
+        
+        if (!product.id || !product.name) {
+            console.error('Invalid product data - missing id or name:', product);
+            return;
+        }
+
+        // Validate and convert price
+        let price = product.price;
+        if (typeof price === 'string') {
+            price = parseFloat(price.replace(/[^\d.-]/g, ''));
+        }
+        if (isNaN(price) || price <= 0) {
+            console.error('Invalid product price:', product.price);
+            return;
+        }
+
+        const eventParams = {
+            'currency': CONFIG.CURRENCY,
+            'value': (price / VND_TO_USD_RATE),
+            'items': [{
+                'item_id': product.id,
+                'item_name': product.name,
+                'price': (price / VND_TO_USD_RATE),
+                'quantity': 1,
+                'category': product.category || 'Fashion',
+                'brand': CONFIG.BRAND,
+                'variant': product.variant || '',
+                'color': product.color || '',
+                'size': product.size || ''
+            }]
+        };
+
+        console.log('Sending view_item event with params:', eventParams); // Debug log
+        trackEvent('view_item', eventParams);
+    } catch (error) {
+        console.error('Error in trackViewItem:', error);
+    }
 }
 
 function trackViewItemList(products, listName) {

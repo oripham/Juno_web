@@ -27,11 +27,25 @@
         // Initialize GA
         initGA();
 
-        // Handle service worker errors
+        // Handle service worker and content.js errors
         window.addEventListener('error', function(e) {
-            if (e.message.includes('service-worker') || e.message.includes('connection')) {
-                console.warn('Service worker error:', e.message);
+            if (e.message.includes('service-worker') || 
+                e.message.includes('connection') || 
+                e.message.includes('content.js')) {
+                console.warn('Extension error:', e.message);
                 return false; // Prevent error from showing in console
+            }
+        });
+
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(e) {
+            if (e.reason && (
+                e.reason.message.includes('service-worker') || 
+                e.reason.message.includes('connection') || 
+                e.reason.message.includes('content.js')
+            )) {
+                console.warn('Extension promise error:', e.reason.message);
+                e.preventDefault(); // Prevent error from showing in console
             }
         });
 

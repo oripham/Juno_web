@@ -711,13 +711,22 @@
                 const productPrice = parseFloat(document.querySelector('.product-price')?.innerText?.replace(/[^\d]/g, '') || '0');
                 const productId = 'product1';
                 
+                console.log('Product data:', { // Debug log
+                    name: productName,
+                    price: productPrice,
+                    id: productId
+                });
+
                 // Track product view
-                trackViewItem({
+                const product = {
                     id: productId,
                     name: productName,
                     price: productPrice,
                     category: 'Shoes'
-                });
+                };
+
+                console.log('Tracking product view:', product); // Debug log
+                trackViewItem(product);
 
                 // Track product image views
                 const productImages = document.querySelectorAll('.product-image img');
