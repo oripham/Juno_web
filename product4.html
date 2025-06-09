@@ -11,12 +11,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRVQQ33EXS"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SNZQ5TRSY3"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-GRVQQ33EXS');
+          gtag('config', 'G-SNZQ5TRSY3');
         </script>
     </head>
     <body>
@@ -696,7 +696,8 @@
             <script type="module">
                 import { CONFIG } from './js/config.js';
                 import { trackViewItem } from './js/analytics.js';
-                import { addToCart } from './js/cart.js';
+                import { addToCart, updateCartCount, clearCart } from './js/cart.js';
+                import { isLoggedIn } from './js/auth.js';
                 
                 window.dataLayer = window.dataLayer || [];
                 
@@ -715,16 +716,15 @@
                 
                 // Lấy thông tin sản phẩm
                 function getProductPrice() {
-                    // Lấy giá từ giao diện (dòng giá đầu tiên trong phần chi tiết sản phẩm)
                     const priceText = document.querySelector('.rightHeightProduct span[style*="font-size: 20px;"]')?.innerText || '';
-                    // Lấy số từ chuỗi, ví dụ: '637,000đ' => 637000
                     return parseInt(priceText.replace(/[^\d]/g, '')) || 0;
                 }
+
                 const product = {
                     id: 'product4',
-                    name: 'Đầm Thun Midi Xoắn Lưng',
+                    name: 'Túi xách nhỏ Top Handle Lock & Key',
                     get price() { return getProductPrice(); },
-                    image: 'images/product4a.png',
+                    image: 'images/product3a.png',
                     size: '',
                     color: '',
                     quantity: 1
@@ -732,6 +732,9 @@
                 
                 // Xử lý thêm vào giỏ hàng
                 document.getElementById('addToCartBtn').addEventListener('click', function() {
+                    console.log('Nút thêm vào giỏ hàng được nhấp.');
+                    console.log('Trạng thái đăng nhập:', isLoggedIn());
+
                     // Lấy lại giá trị màu và size từ radio button đang được chọn
                     const selectedColor = document.querySelector('input[name="option1"]:checked');
                     const selectedSize = document.querySelector('input[name="option2"]:checked');
@@ -746,12 +749,11 @@
                         alert('Vui lòng chọn size sản phẩm!');
                         return;
                     }
+
                     // Đảm bảo lấy giá mới nhất
                     const productToAdd = { ...product, price: product.price };
-                    if (addToCart(productToAdd)) {
-                        alert('Đã thêm sản phẩm vào giỏ hàng!');
-                        updateCartCount();
-                    }
+                    console.log('Sản phẩm sẽ thêm vào giỏ hàng:', productToAdd);
+                    addToCart(productToAdd);
                 });
             </script>
     </body>

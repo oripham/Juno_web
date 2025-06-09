@@ -11,18 +11,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRVQQ33EXS"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SNZQ5TRSY3"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-GRVQQ33EXS');
+      gtag('config', 'G-SNZQ5TRSY3');
     </script>
     <script type="module">
         import { CONFIG } from './js/config.js';
         import { initGA } from './js/analytics.js';
         import { getCart, removeFromCart, updateQuantity, clearCart, handleCheckout } from './js/cart.js';
         import { trackPurchase } from './js/analytics.js';
+
+        // Debug: Check localStorage data
+        console.log('Debug: Checking localStorage data...');
+        console.log('Raw cart data:', localStorage.getItem('cart'));
+        console.log('Parsed cart data:', JSON.parse(localStorage.getItem('cart') || '[]'));
+        console.log('Current user:', localStorage.getItem('currentUser'));
 
         // Initialize GA
         initGA();
@@ -53,31 +59,55 @@
         function displayCart() {
             const cartContainer = document.getElementById('cart-items');
             const cart = getCart();
+            const cartTotal = document.getElementById('cartTotal');
+            const finalTotal = document.getElementById('finalTotal');
+            const shippingFee = document.getElementById('shippingFee');
             
-            if (!cartContainer) return;
+            if (!cartContainer) {
+                console.error('Cart container not found');
+                return;
+            }
             
-            if (cart.length === 0) {
+            console.log('Current cart:', cart); // Debug log
+            
+            if (!cart || cart.length === 0) {
                 cartContainer.innerHTML = '<p>Giỏ hàng của bạn đang trống</p>';
+                cartTotal.textContent = '0 VND';
+                finalTotal.textContent = '0 VND';
+                shippingFee.textContent = '0 VND';
                 return;
             }
 
-            cartContainer.innerHTML = cart.map(item => `
-                <div class="cart-item" data-id="${item.id}">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="item-details">
-                        <h3>${item.name}</h3>
-                        <p>Size: ${item.size || 'N/A'}</p>
-                        <p>Màu: ${item.color || 'N/A'}</p>
-                        <p class="price">${item.price.toLocaleString('vi-VN')}đ</p>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn minus">-</button>
-                            <input type="number" value="${item.quantity}" min="1" max="10">
-                            <button class="quantity-btn plus">+</button>
+            let total = 0;
+            cartContainer.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                return `
+                    <div class="cart-item" data-id="${item.id}" style="display: flex; margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
+                        <div style="width: 100px;">
+                            <img src="${item.image}" alt="${item.name}" style="width: 100%;">
+                        </div>
+                        <div style="flex: 1; padding: 0 20px;">
+                            <h3 style="margin: 0 0 10px 0;">${item.name}</h3>
+                            <p style="margin: 5px 0;">Size: ${item.size || 'N/A'}</p>
+                            <p style="margin: 5px 0;">Màu: ${item.color || 'N/A'}</p>
+                            <p style="margin: 5px 0; font-weight: bold;">${item.price.toLocaleString('vi-VN')}đ</p>
+                            <div style="display: flex; align-items: center; margin-top: 10px;">
+                                <button class="quantity-btn minus" style="padding: 5px 10px;">-</button>
+                                <input type="number" value="${item.quantity}" min="1" max="10" style="width: 50px; text-align: center; margin: 0 10px;">
+                                <button class="quantity-btn plus" style="padding: 5px 10px;">+</button>
+                                <button class="remove-item" style="margin-left: 20px; padding: 5px 10px;">Xóa</button>
+                            </div>
                         </div>
                     </div>
-                    <button class="remove-item">×</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+
+            // Update totals
+            const shipping = total > 300000 ? 0 : 30000;
+            cartTotal.textContent = `${total.toLocaleString('vi-VN')}đ`;
+            shippingFee.textContent = `${shipping.toLocaleString('vi-VN')}đ`;
+            finalTotal.textContent = `${(total + shipping).toLocaleString('vi-VN')}đ`;
 
             // Add event listeners
             cartContainer.querySelectorAll('.remove-item').forEach(btn => {
@@ -107,7 +137,7 @@
         displayCart();
 
         // Add event listener to checkout button
-        const checkoutButton = document.querySelector('.checkout-button');
+        const checkoutButton = document.getElementById('checkoutBtn');
         if (checkoutButton) {
             checkoutButton.addEventListener('click', handleCheckout);
         }
@@ -252,17 +282,9 @@
                         </div>
                         <div style="margin-left: -15px; margin-right: -15px;">
                             <div style="width: 66.66666667%; float: left;">
-                                <table style="margin-bottom: 30px; width: 100%; border-spacing: 0;">
-                                    <thead>
-                                        <tr>
-                                            <th width="20%"></th>
-                                            <th width="40%"></th>
-                                            <th width="20%"></th>
-                                            <th width="20%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cartItems"></tbody>
-                                </table>
+                                <div id="cart-items" style="margin-bottom: 30px;">
+                                    <!-- Cart items will be displayed here -->
+                                </div>
                             </div>
                             <div style="margin-top: 50px; width: 33.33333333%; float: left; border: 1px solid black; background: #d6cbcb;" class="customize">
                                 <div class="clear-fix" style="padding: 20px 30px 20px 20px !important; float: left;">

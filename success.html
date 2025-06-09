@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="shortcut icon" href="https://file.hstatic.net/1000003969/file/favicon-juno_8afc5c05a55941aa88438ce9264f03f3.png" type="image/png" />
+    <meta charset="utf-8" />
+    <title>ĐẶT HÀNG THÀNH CÔNG - JUNO</title>
+    <meta name="description" content="JUNO là thương hiệu giày thời trang nữ hàng đầu Việt Nam. Đến với JUNO, bạn sẽ dễ dàng chọn cho mình một sản phẩm giày hiệu chất lượng và cực kỳ phong cách." />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SNZQ5TRSY3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SNZQ5TRSY3');
+    </script>
+    <script type="module">
+        import { CONFIG } from './js/config.js';
+        import { trackPurchase } from './js/analytics.js';
+        import { getCart, clearCart } from './js/cart.js';
+        import { getCurrentUser } from './js/auth.js';
+
+        // Track purchase when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const cart = getCart();
+            const user = getCurrentUser();
+            
+            if (cart.length > 0) {
+                // Calculate total revenue
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shipping = total > 300000 ? 0 : 30000;
+                const finalTotal = total + shipping;
+
+                // Track purchase in GA4
+                trackPurchase({
+                    transactionId: 'ORDER_' + Date.now(),
+                    value: finalTotal,
+                    currency: 'VND',
+                    items: cart.map(item => ({
+                        item_id: item.id,
+                        item_name: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                        item_variant: `${item.color} - ${item.size}`
+                    }))
+                });
+
+                // Clear cart after successful purchase
+                clearCart();
+            }
+        });
+
+        // Lấy thông tin đơn hàng từ localStorage
+        const lastOrder = JSON.parse(localStorage.getItem('lastOrder') || '{}');
+        const orderTotal = localStorage.getItem('orderTotal');
+
+        // Hiển thị tổng đơn hàng trên trang
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalEl = document.getElementById('order-total');
+            if (totalEl && orderTotal) {
+                totalEl.textContent = Number(orderTotal).toLocaleString('vi-VN') + 'đ';
+            }
+        });
+
+        // Đẩy doanh thu lên GA4
+        if (window.gtag && lastOrder && lastOrder.id && orderTotal) {
+            gtag('event', 'purchase', {
+                transaction_id: lastOrder.id,
+                value: Number(orderTotal),
+                currency: 'VND',
+                items: (lastOrder.items || []).map(item => ({
+                    item_id: item.id,
+                    item_name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="main-body">
+        <div>
+            <div style="position: absolute; z-index: 999; width: 100%;">
+                <header class="main-header clear-fix affix-mobile">
+                    <div class="no-padding" style="width: 16.66666667%; position: relative; min-height: 1px; float: left">
+                        <div style="margin-left: 30px; align-items: center; display: flex;">
+                            <div style="margin: 17px 0 0 0; float: left; width: 100%;" class="wrap-logo">
+                                <a href="index.html">
+                                    <img id="logo" src="images/logo-svg.svg" alt="JUNO" class="img-responsive logoimg"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <main style="position: relative; z-index: 99; overflow-x: hidden; margin: 100px;">
+                <div class="container-fluid">
+                    <div style="padding-top: 30px; padding-bottom: 30px;">
+                        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                            <div style="margin-bottom: 30px;">
+                                <i class="fa-solid fa-circle-check" style="font-size: 80px; color: #4CAF50;"></i>
+                            </div>
+                            <h1 style="margin-bottom: 20px;">ĐẶT HÀNG THÀNH CÔNG!</h1>
+                            <p style="font-size: 18px; margin-bottom: 30px;">
+                                Cảm ơn bạn đã mua hàng tại JUNO. Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.
+                            </p>
+                            <div style="margin-bottom: 30px;">
+                                <p style="font-size: 16px;">Mã đơn hàng: <strong>ORDER_<span id="orderId"></span></strong></p>
+                                <p style="font-size: 16px;">Tổng tiền: <strong><span id="orderTotal"></span></strong></p>
+                            </div>
+                            <div style="margin-top: 40px;">
+                                <a href="index.html" class="btnBuyNow" style="display: inline-block; margin-right: 20px;">
+                                    <i class="fa-solid fa-house"></i> VỀ TRANG CHỦ
+                                </a>
+                                <a href="newProduct.html" class="btnBuyNow" style="display: inline-block;">
+                                    <i class="fa-solid fa-bag-shopping"></i> TIẾP TỤC MUA SẮM
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        // Display order details
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderId = 'ORDER_' + Date.now();
+            document.getElementById('orderId').textContent = orderId;
+            
+            // Get cart total from localStorage
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = total > 300000 ? 0 : 30000;
+            const finalTotal = total + shipping;
+            
+            document.getElementById('orderTotal').textContent = finalTotal.toLocaleString('vi-VN') + 'đ';
+        });
+    </script>
+</body>
+</html> 
